@@ -268,14 +268,14 @@
       padding:24px;display:flex;gap:16px;align-items:flex-start;
     }
     .sdg-num{
-      flex-shrink:0;width:52px;height:52px;
-      display:flex;align-items:center;justify-content:center;
-      font-family:'Bebas Neue',sans-serif;font-size:24px;
-      border:1px solid;
+      flex-shrink:0;width:60px;height:60px;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      font-family:'Bebas Neue',sans-serif;
+      border:none;
     }
-    .sdg-num.b{background:rgba(0,100,200,0.15);color:#0064c8;border-color:#0064c8;}
-    .sdg-num.o{background:rgba(255,100,0,0.1);color:#ff6400;border-color:#ff6400;}
-    .sdg-num.g{background:rgba(0,160,80,0.1);color:#00a050;border-color:#00a050;}
+    .sdg-num.b{background:#00689d;color:#fff;border-color:#00689d;}   /* SDG 16 - blue */
+    .sdg-num.o{background:#f99d26;color:#fff;border-color:#f99d26;}   /* SDG 11 - orange */
+    .sdg-num.g{background:#f36d25;color:#fff;border-color:#f36d25;}   /* SDG 9  - red-orange */
     .sdg-body h3{
       font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px;
       color:#fff;margin-bottom:6px;
@@ -360,7 +360,7 @@
     <circle cx="80" cy="170" r="4" fill="#ff4a1c" opacity="0.5"/>
   </svg>
 
-  <div class="hero-eyebrow">⚠️ Wireless IED Detection & Neutralization System</div>
+  <div class="hero-eyebrow">⚠ Wireless IED Detection & Neutralization System</div>
   <h1>
     <span class="line1">SECURE</span>
     <span class="line2">HIVE</span>
@@ -500,8 +500,8 @@
       <div class="comp-icon">4</div>
       <div>
         <h3>ESP8266 NodeMCU</h3>
-        <p>Wi-Fi module integrated with SMTP protocols for email alerts. Provides redundant communication channel alongside GSM for comprehensive
-          </div>
+        <p>Wi-Fi module integrated with SMTP protocols for email alerts. Provides redundant communication channel alongside GSM for comprehensive notification coverage.</p>
+      </div>
     </div>
     <div class="comp-card">
       <div class="comp-icon">5</div>
@@ -608,10 +608,10 @@
       <h3>2ND PLACE</h3>
       <p>IDEATHON 2K25 — Cash prize of ₹5,000 at B.S. Abdur Rahman Crescent Institute</p>
     </div>
-    <div class="ach-card" style="border-top-color:var(--dim);">
-      <span class="ach-badge" style="color:var(--dim);">📋 IP — 2025</span>
-      <h3>PATENT FILED</h3>
-      <p>Patent publication submitted for Secure Hive system in 2025</p>
+    <div class="ach-card" style="border-top-color:#00c4ff;">
+      <span class="ach-badge" style="color:#00c4ff;">🔬 Innovation Repository — 2024</span>
+      <h3>IR2024-917536</h3>
+      <p>Registered on Innovation Repository under Defence & Security, Education, Manufacturing & Emerging areas — Innovation / Prototype stage. YUKTI Innovation Challenge 2025 nominee.</p>
     </div>
     <div class="ach-card" style="border-top-color:var(--dim);">
       <span class="ach-badge" style="color:var(--dim);">💡 Hackathon — 2025</span>
@@ -635,21 +635,30 @@
   </div>
   <div class="sdg-row fade-in">
     <div class="sdg-card">
-      <div class="sdg-num b">16</div>
+      <div class="sdg-num b" style="flex-direction:column;font-size:18px;width:60px;height:60px;gap:0;">
+        <span style="font-size:10px;font-family:'Share Tech Mono',monospace;line-height:1;">SDG</span>
+        <span style="font-size:26px;line-height:1;">16</span>
+      </div>
       <div class="sdg-body">
         <h3>Peace, Justice & Strong Institutions</h3>
         <p>Empowers law enforcement with real-time detection and automated alerts, strengthening institutional response to explosive threats and supporting rule of law.</p>
       </div>
     </div>
     <div class="sdg-card">
-      <div class="sdg-num g">11</div>
+      <div class="sdg-num g" style="flex-direction:column;font-size:18px;width:60px;height:60px;gap:0;">
+        <span style="font-size:10px;font-family:'Share Tech Mono',monospace;line-height:1;">SDG</span>
+        <span style="font-size:26px;line-height:1;">11</span>
+      </div>
       <div class="sdg-body">
         <h3>Sustainable Cities & Communities</h3>
         <p>Provides real-time threat alerts in public spaces, transportation hubs, and event venues — reducing economic and human losses from IED incidents in urban areas.</p>
       </div>
     </div>
     <div class="sdg-card">
-      <div class="sdg-num o">9</div>
+      <div class="sdg-num o" style="flex-direction:column;font-size:18px;width:60px;height:60px;gap:0;">
+        <span style="font-size:10px;font-family:'Share Tech Mono',monospace;line-height:1;">SDG</span>
+        <span style="font-size:26px;line-height:1;">9</span>
+      </div>
       <div class="sdg-body">
         <h3>Industry, Innovation & Infrastructure</h3>
         <p>Leverages affordable sensors, GSM/LoRa communication, and AI-ready architecture to promote smart, resilient safety infrastructure in both urban and rural environments.</p>
