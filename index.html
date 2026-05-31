@@ -327,6 +327,7 @@
     <li><a href="#components">Hardware</a></li>
     <li><a href="#results">Results</a></li>
     <li><a href="#achievements">Awards</a></li>
+      <li><a href="#app">App</a></li>
   </ul>
 </nav>
 
@@ -476,42 +477,42 @@
   </div>
   <div class="comp-grid fade-in">
     <div class="comp-card">
-      <div class="comp-icon">1</div>
+      <div class="comp-icon">📡</div>
       <div>
         <h3>EMF Detector</h3>
         <p>TL081 OpAmp-based circuit calibrated to detect electromagnetic radiation from cellular, Wi-Fi, and Bluetooth signals indicative of wireless IED triggers.</p>
       </div>
     </div>
     <div class="comp-card">
-      <div class="comp-icon">2</div>
+      <div class="comp-icon">🎛️</div>
       <div>
         <h3>Arduino Nano</h3>
         <p>Main microcontroller coordinating all modules — EMF input processing, GPS data parsing, GSM command execution, and jamming relay control logic.</p>
       </div>
     </div>
     <div class="comp-card">
-      <div class="comp-icon">3</div>
+      <div class="comp-icon">📶</div>
       <div>
         <h3>SIM800L GSM</h3>
         <p>GSM module with external SMA antenna for SMS delivery. Uses AT commands for reliable message dispatch to authorities upon threat detection.</p>
       </div>
     </div>
     <div class="comp-card">
-      <div class="comp-icon">4</div>
+      <div class="comp-icon">🌐</div>
       <div>
         <h3>ESP8266 NodeMCU</h3>
         <p>Wi-Fi module integrated with SMTP protocols for email alerts. Provides redundant communication channel alongside GSM for comprehensive notification coverage.</p>
       </div>
     </div>
     <div class="comp-card">
-      <div class="comp-icon">5</div>
+      <div class="comp-icon">📍</div>
       <div>
         <h3>NEO-6M GPS</h3>
         <p>GPS module providing real-time location coordinates with ±5 meter accuracy, integrated with alert systems for precise threat localization and reporting.</p>
       </div>
     </div>
     <div class="comp-card">
-      <div class="comp-icon">6</div>
+      <div class="comp-icon">📻</div>
       <div>
         <h3>Patch Jamming Antenna</h3>
         <p>Custom-designed directional antenna suppressing RF signals in IED activation bands (433 MHz – 5.8 GHz) within a 3–5 meter radius to neutralize remote triggers.</p>
@@ -613,6 +614,11 @@
       <h3>IR2024-917536</h3>
       <p>Registered on Innovation Repository under Defence & Security, Education, Manufacturing & Emerging areas — Innovation / Prototype stage. YUKTI Innovation Challenge 2025 nominee.</p>
     </div>
+    <div class="ach-card" style="border-top-color:#a855f7;">
+      <span class="ach-badge" style="color:#a855f7;">🏛️ Govt. of India Patent — 2025</span>
+      <h3>APP NO. 202541114184</h3>
+      <p>Ordinary patent application filed with the Office of the Controller General of Patents, Designs & Trade Marks, Ministry of Commerce & Industry. Filed: 20/11/2025 · Published (U/S 11A): 16/01/2026 · Status: Awaiting Examination</p>
+    </div>
     <div class="ach-card" style="border-top-color:var(--dim);">
       <span class="ach-badge" style="color:var(--dim);">💡 Hackathon — 2025</span>
       <h3>PARTICIPATED</h3>
@@ -622,6 +628,80 @@
       <span class="ach-badge" style="color:var(--dim);">🔬 Progress — 2025</span>
       <h3>STAGE 2</h3>
       <p>Advanced from Ideathon 3.0 to Innovathon 3.0 — includes full app development & antenna design</p>
+    </div>
+  </div>
+</section>
+
+<!-- APP -->
+<section id="app" style="background:rgba(0,0,0,0.25);">
+  <div class="sec-head fade-in">
+    <span class="sec-num">// 07</span>
+    <h2>SECURE HIVE APP</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="fade-in" style="margin-bottom:28px;max-width:700px;">
+    <p style="font-size:17px;color:var(--text);line-height:1.75;">
+      A companion mobile application built to <strong style="color:var(--accent);">monitor the Secure Hive prototype in real time</strong> — giving operators full situational awareness from their phone while the system runs in the field.
+    </p>
+  </div>
+  <div class="comp-grid fade-in">
+    <div class="comp-card">
+      <div class="comp-icon" style="border-color:var(--accent);">📡</div>
+      <div>
+        <h3>EMF Live Monitor</h3>
+        <p>Real-time display of electromagnetic field readings detected by the prototype. Visualizes signal strength and flags anomalies as they are detected in the field.</p>
+      </div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-icon" style="border-color:var(--accent);">📶</div>
+      <div>
+        <h3>Signal Availability</h3>
+        <p>Monitors the presence of nearby Bluetooth and Wi-Fi signals around the prototype, helping identify suspicious wireless activity in the surrounding environment.</p>
+      </div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-icon" style="border-color:var(--warn);">🗺️</div>
+      <div>
+        <h3>Vehicle Map Tracking</h3>
+        <p>Live GPS map showing the route traveled by the vehicle carrying the prototype. Full travel history with path visualization for post-mission analysis.</p>
+      </div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-icon" style="border-color:#a855f7;">🕐</div>
+      <div>
+        <h3>30-Min Auto Logging</h3>
+        <p>Automatically captures a complete snapshot of all sensor readings every 30 minutes — EMF levels, signal detections, GPS coordinates — and stores them as timestamped logs.</p>
+      </div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-icon" style="border-color:#ffcc00;">📥</div>
+      <div>
+        <h3>CSV Export</h3>
+        <p>All recorded logs can be downloaded as a <strong style="color:#ffcc00;">.csv file</strong> directly from the app for offline analysis, reporting, or integration with data tools.</p>
+      </div>
+    </div>
+    <div class="comp-card" style="background:rgba(0,255,106,0.03);border-color:var(--accent);">
+      <div class="comp-icon" style="border-color:var(--accent);">⚡</div>
+      <div>
+        <h3>Unified Dashboard</h3>
+        <p>Single-screen overview combining all live data streams — EMF, signals, GPS, and log status — giving operators a complete real-time picture without switching views.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- App flow bar -->
+  <div class="fade-in" style="margin-top:32px;background:var(--panel);border:1px solid var(--border);padding:24px 28px;">
+    <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:2px;margin-bottom:16px;">// DATA FLOW</div>
+    <div style="display:flex;align-items:center;gap:0;flex-wrap:wrap;gap:2px;">
+      <div style="background:rgba(0,255,106,0.08);border:1px solid var(--accent);padding:10px 16px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:1px;white-space:nowrap;">PROTOTYPE SENSORS</div>
+      <div style="color:var(--dim);padding:0 8px;font-size:18px;">→</div>
+      <div style="background:rgba(0,196,255,0.08);border:1px solid var(--accent2);padding:10px 16px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--accent2);letter-spacing:1px;white-space:nowrap;">IoT TRANSMISSION</div>
+      <div style="color:var(--dim);padding:0 8px;font-size:18px;">→</div>
+      <div style="background:rgba(168,85,247,0.08);border:1px solid #a855f7;padding:10px 16px;font-family:'Share Tech Mono',monospace;font-size:11px;color:#a855f7;letter-spacing:1px;white-space:nowrap;">MOBILE APP</div>
+      <div style="color:var(--dim);padding:0 8px;font-size:18px;">→</div>
+      <div style="background:rgba(255,204,0,0.08);border:1px solid #ffcc00;padding:10px 16px;font-family:'Share Tech Mono',monospace;font-size:11px;color:#ffcc00;letter-spacing:1px;white-space:nowrap;">30-MIN LOG</div>
+      <div style="color:var(--dim);padding:0 8px;font-size:18px;">→</div>
+      <div style="background:rgba(255,74,28,0.08);border:1px solid var(--warn);padding:10px 16px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--warn);letter-spacing:1px;white-space:nowrap;">CSV DOWNLOAD</div>
     </div>
   </div>
 </section>
