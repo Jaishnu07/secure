@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Secure Hive | Wireless IED Detection & Neutralization System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #04080a;
+      --panel: #070e12;
+      --border: #0f2a1e;
+      --accent: #00ff6a;
+      --accent2: #00c4ff;
+      --warn: #ff4a1c;
+      --text: #b8d4c0;
+      --dim: #3a5a45;
+      --grid: rgba(0,255,106,0.03);
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{
+      background:var(--bg);
+      color:var(--text);
+      font-family:'Barlow Condensed',sans-serif;
+      font-size:16px;
+      line-height:1.7;
+      overflow-x:hidden;
+    }
+    body::before{
+      content:'';
+      position:fixed;inset:0;
+      background-image:
+        linear-gradient(var(--grid) 1px,transparent 1px),
+        linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+      background-size:48px 48px;
+      pointer-events:none;z-index:0;
+    }
+
+    /* NAV */
+    nav{
+      position:fixed;top:0;left:0;right:0;z-index:100;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 48px;height:56px;
+      background:rgba(4,8,10,0.95);
+      border-bottom:1px solid var(--border);
+      backdrop-filter:blur(10px);
+    }
+    .nav-logo{
+      font-family:'Bebas Neue',sans-serif;
+      font-size:22px;letter-spacing:4px;
+      color:var(--accent);text-decoration:none;
+    }
+    .nav-links{display:flex;gap:28px;list-style:none;}
+    .nav-links a{
+      font-family:'Share Tech Mono',monospace;
+      font-size:11px;color:var(--dim);
+      text-decoration:none;letter-spacing:2px;text-transform:uppercase;
+      transition:color .2s;
+    }
+    .nav-links a:hover{color:var(--accent);}
+
+    /* STATUS BAR */
+    .status-bar{
+      position:fixed;top:56px;left:0;right:0;z-index:99;
+      display:flex;align-items:center;gap:24px;
+      padding:0 48px;height:32px;
+      background:rgba(0,255,106,0.04);
+      border-bottom:1px solid var(--border);
+      font-family:'Share Tech Mono',monospace;font-size:10px;
+      letter-spacing:2px;text-transform:uppercase;
+    }
+    .status-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:blink 1.4s infinite;}
+    @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.2;}}
+    .status-text{color:var(--accent);}
+    .status-sep{color:var(--dim);}
+    .status-info{color:var(--dim);}
+
+    /* HERO */
+    .hero{
+      min-height:100vh;
+      display:flex;flex-direction:column;justify-content:center;
+      padding:130px 48px 80px;
+      position:relative;z-index:2;overflow:hidden;
+    }
+    .hero-eyebrow{
+      font-family:'Share Tech Mono',monospace;font-size:11px;
+      color:var(--warn);letter-spacing:4px;text-transform:uppercase;
+      margin-bottom:16px;
+      opacity:0;animation:fadeUp .7s ease .2s forwards;
+    }
+    .hero h1{
+      font-family:'Bebas Neue',sans-serif;
+      font-size:clamp(60px,10vw,130px);
+      letter-spacing:6px;line-height:.95;
+      opacity:0;animation:fadeUp .7s ease .35s forwards;
+    }
+    .hero h1 .line1{display:block;color:#fff;}
+    .hero h1 .line2{
+      display:block;
+      -webkit-text-stroke:2px var(--accent);
+      color:transparent;
+    }
+    .hero-desc{
+      margin-top:28px;max-width:560px;
+      font-size:18px;font-weight:400;color:var(--text);
+      opacity:0;animation:fadeUp .7s ease .5s forwards;
+    }
+    .hero-stats{
+      margin-top:40px;display:flex;gap:0;
+      border:1px solid var(--border);
+      width:fit-content;
+      opacity:0;animation:fadeUp .7s ease .65s forwards;
+    }
+    .hstat{
+      padding:20px 32px;border-right:1px solid var(--border);
+    }
+    .hstat:last-child{border-right:none;}
+    .hstat-val{
+      font-family:'Bebas Neue',sans-serif;font-size:42px;
+      color:var(--accent);letter-spacing:2px;line-height:1;
+      display:block;
+    }
+    .hstat-val.red{color:var(--warn);}
+    .hstat-val.blue{color:var(--accent2);}
+    .hstat-lbl{
+      font-family:'Share Tech Mono',monospace;font-size:9px;
+      color:var(--dim);letter-spacing:2px;text-transform:uppercase;
+      margin-top:4px;display:block;
+    }
+
+    /* RADAR SVG */
+    .radar-wrap{
+      position:absolute;right:60px;top:50%;transform:translateY(-50%);
+      width:380px;height:380px;opacity:.12;pointer-events:none;
+    }
+
+    /* SECTIONS */
+    section{position:relative;z-index:2;padding:80px 48px;}
+    .sec-head{
+      display:flex;align-items:center;gap:16px;margin-bottom:48px;
+    }
+    .sec-num{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:3px;}
+    .sec-head h2{
+      font-family:'Bebas Neue',sans-serif;
+      font-size:clamp(28px,4vw,44px);
+      letter-spacing:4px;color:#fff;
+    }
+    .sec-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+
+    /* ABOUT */
+    .about-layout{display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:start;}
+    .about-text p{font-size:17px;font-weight:400;color:var(--text);margin-bottom:14px;line-height:1.75;}
+    .about-text p strong{color:var(--accent);font-weight:600;}
+    .callout{
+      background:var(--panel);border:1px solid var(--border);
+      border-left:3px solid var(--warn);
+      padding:24px 28px;margin-top:20px;
+    }
+    .callout-title{
+      font-family:'Share Tech Mono',monospace;font-size:10px;
+      color:var(--warn);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;
+    }
+    .callout p{font-size:15px;color:var(--text);}
+    .market-cards{display:flex;flex-direction:column;gap:14px;}
+    .mcard{
+      background:var(--panel);border:1px solid var(--border);
+      padding:18px 22px;display:flex;align-items:center;gap:20px;
+    }
+    .mcard-val{
+      font-family:'Bebas Neue',sans-serif;font-size:32px;
+      color:var(--accent);letter-spacing:2px;flex-shrink:0;min-width:120px;
+    }
+    .mcard-val.b{color:var(--accent2);}
+    .mcard-val.w{color:#ffcc00;}
+    .mcard-info strong{display:block;font-size:14px;color:#fff;font-weight:600;margin-bottom:2px;}
+    .mcard-info span{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:1px;}
+
+    /* PHASES */
+    .phases-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;}
+    .phase{
+      background:var(--panel);
+      padding:32px 24px;
+      position:relative;overflow:hidden;
+      border:1px solid var(--border);
+      transition:border-color .3s,transform .3s;
+    }
+    .phase:hover{border-color:var(--accent);transform:translateY(-4px);}
+    .phase-num{
+      font-family:'Bebas Neue',sans-serif;font-size:72px;
+      color:rgba(0,255,106,0.05);
+      position:absolute;top:-8px;right:12px;
+      line-height:1;pointer-events:none;
+    }
+    .phase-tag{
+      font-family:'Share Tech Mono',monospace;font-size:9px;
+      color:var(--accent);letter-spacing:3px;text-transform:uppercase;
+      margin-bottom:12px;
+    }
+    .phase h3{
+      font-family:'Bebas Neue',sans-serif;
+      font-size:26px;letter-spacing:3px;color:#fff;margin-bottom:12px;
+    }
+    .phase p{font-size:14px;color:var(--dim);line-height:1.6;}
+
+    /* COMPONENTS */
+    .comp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+    .comp-card{
+      background:var(--panel);border:1px solid var(--border);
+      padding:22px;
+      display:flex;gap:16px;align-items:flex-start;
+      transition:border-color .3s;
+    }
+    .comp-card:hover{border-color:var(--accent2);}
+    .comp-icon{
+      width:40px;height:40px;border:1px solid var(--accent2);
+      display:flex;align-items:center;justify-content:center;
+      font-size:18px;flex-shrink:0;
+      background:rgba(0,196,255,0.05);
+    }
+    .comp-card h3{
+      font-family:'Bebas Neue',sans-serif;
+      font-size:18px;letter-spacing:2px;color:#fff;margin-bottom:6px;
+    }
+    .comp-card p{font-size:13px;color:var(--dim);line-height:1.5;}
+
+    /* RESULTS */
+    .results-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+    .res-card{
+      background:var(--panel);border:1px solid var(--border);
+      padding:28px;
+    }
+    .res-card h3{
+      font-family:'Share Tech Mono',monospace;font-size:10px;
+      color:var(--accent);letter-spacing:3px;text-transform:uppercase;
+      margin-bottom:16px;
+    }
+    .metric-row{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:10px 0;border-bottom:1px solid var(--border);
+    }
+    .metric-row:last-child{border-bottom:none;}
+    .metric-label{font-size:14px;color:var(--dim);}
+    .metric-val{
+      font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--accent);
+    }
+    .metric-val.warn{color:var(--warn);}
+
+    /* ACHIEVEMENTS */
+    .ach-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+    .ach-card{
+      background:var(--panel);border:1px solid var(--border);
+      border-top:3px solid var(--accent);
+      padding:24px;
+    }
+    .ach-badge{
+      font-family:'Share Tech Mono',monospace;font-size:9px;
+      letter-spacing:2px;text-transform:uppercase;
+      color:var(--accent);margin-bottom:10px;display:block;
+    }
+    .ach-card h3{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:#fff;margin-bottom:6px;}
+    .ach-card p{font-size:13px;color:var(--dim);}
+
+    /* SDG */
+    .sdg-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+    .sdg-card{
+      background:var(--panel);border:1px solid var(--border);
+      padding:24px;display:flex;gap:16px;align-items:flex-start;
+    }
+    .sdg-num{
+      flex-shrink:0;width:52px;height:52px;
+      display:flex;align-items:center;justify-content:center;
+      font-family:'Bebas Neue',sans-serif;font-size:24px;
+      border:1px solid;
+    }
+    .sdg-num.b{background:rgba(0,100,200,0.15);color:#0064c8;border-color:#0064c8;}
+    .sdg-num.o{background:rgba(255,100,0,0.1);color:#ff6400;border-color:#ff6400;}
+    .sdg-num.g{background:rgba(0,160,80,0.1);color:#00a050;border-color:#00a050;}
+    .sdg-body h3{
+      font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px;
+      color:#fff;margin-bottom:6px;
+    }
+    .sdg-body p{font-size:13px;color:var(--dim);line-height:1.5;}
+
+    /* ANIMATIONS */
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+    .fade-in{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;}
+    .fade-in.visible{opacity:1;transform:translateY(0);}
+
+    /* FOOTER */
+    footer{
+      position:relative;z-index:2;
+      background:var(--panel);border-top:1px solid var(--border);
+      padding:36px 48px;
+      display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;
+    }
+    .foot-logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:4px;color:var(--accent);}
+    .foot-r{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--dim);text-align:right;line-height:1.8;}
+
+    ::-webkit-scrollbar{width:5px;}
+    ::-webkit-scrollbar-track{background:var(--bg);}
+    ::-webkit-scrollbar-thumb{background:var(--border);}
+
+    @media(max-width:768px){
+      nav,footer{padding:0 20px;}
+      .status-bar{padding:0 20px;}
+      section{padding:60px 20px;}
+      .hero{padding:120px 20px 60px;}
+      .hero h1{font-size:64px;}
+      .hero-stats{flex-direction:column;width:100%;}
+      .hstat{border-right:none;border-bottom:1px solid var(--border);}
+      .about-layout,.results-grid{grid-template-columns:1fr;}
+      .phases-grid,.comp-grid,.ach-grid,.sdg-row{grid-template-columns:1fr;}
+      .radar-wrap{display:none;}
+      .nav-links{display:none;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">SECURE HIVE</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#phases">Phases</a></li>
+    <li><a href="#components">Hardware</a></li>
+    <li><a href="#results">Results</a></li>
+    <li><a href="#achievements">Awards</a></li>
+  </ul>
+</nav>
+
+<!-- STATUS BAR -->
+<div class="status-bar">
+  <div class="status-dot"></div>
+  <span class="status-text">SYSTEM ACTIVE</span>
+  <span class="status-sep">//</span>
+  <span class="status-info">EMF MONITORING</span>
+  <span class="status-sep">//</span>
+  <span class="status-info">GPS TRACKING ENABLED</span>
+  <span class="status-sep">//</span>
+  <span class="status-info">EFFICIENCY: 87%</span>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <svg class="radar-wrap" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="150" cy="150" r="140" stroke="#00ff6a" stroke-width="1"/>
+    <circle cx="150" cy="150" r="100" stroke="#00ff6a" stroke-width="1"/>
+    <circle cx="150" cy="150" r="60" stroke="#00ff6a" stroke-width="1"/>
+    <circle cx="150" cy="150" r="20" stroke="#00ff6a" stroke-width="1"/>
+    <line x1="150" y1="10" x2="150" y2="290" stroke="#00ff6a" stroke-width="0.5"/>
+    <line x1="10" y1="150" x2="290" y2="150" stroke="#00ff6a" stroke-width="0.5"/>
+    <line x1="51" y1="51" x2="249" y2="249" stroke="#00ff6a" stroke-width="0.5"/>
+    <line x1="249" y1="51" x2="51" y2="249" stroke="#00ff6a" stroke-width="0.5"/>
+    <path d="M150 150 L150 10 A140 140 0 0 1 280 150 Z" fill="rgba(0,255,106,0.06)">
+      <animateTransform attributeName="transform" type="rotate" from="0 150 150" to="360 150 150" dur="4s" repeatCount="indefinite"/>
+    </path>
+    <circle cx="210" cy="90" r="5" fill="#ff4a1c" opacity="0.8"/>
+    <circle cx="80" cy="170" r="4" fill="#ff4a1c" opacity="0.5"/>
+  </svg>
+
+  <div class="hero-eyebrow">⚠️ Wireless IED Detection & Neutralization System</div>
+  <h1>
+    <span class="line1">SECURE</span>
+    <span class="line2">HIVE</span>
+  </h1>
+  <p class="hero-desc">
+    An autonomous embedded system that detects abnormal electromagnetic fields from wireless IEDs, jams trigger signals, tracks location via GPS, and instantly notifies authorities — all without human intervention.
+  </p>
+  <div class="hero-stats">
+    <div class="hstat">
+      <span class="hstat-val">87%</span>
+      <span class="hstat-lbl">System Efficiency</span>
+    </div>
+    <div class="hstat">
+      <span class="hstat-val red">&lt;6s</span>
+      <span class="hstat-lbl">Alert Dispatch Time</span>
+    </div>
+    <div class="hstat">
+      <span class="hstat-val blue">±5m</span>
+      <span class="hstat-lbl">GPS Accuracy</span>
+    </div>
+    <div class="hstat">
+      <span class="hstat-val">5.8GHz</span>
+      <span class="hstat-lbl">Max Jam Frequency</span>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" style="background:rgba(0,0,0,0.25);">
+  <div class="sec-head fade-in">
+    <span class="sec-num">// 01</span>
+    <h2>PROJECT OVERVIEW</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="about-layout fade-in">
+    <div class="about-text">
+      <p>Over <strong>80,000 IED-related incidents</strong> occurred globally between 2011 and 2021, causing more than 120,000 fatalities. Remote-controlled IEDs can be activated via mobile phones, RF remotes, or walkie-talkies — making traditional detection methods inadequate.</p>
+      <p><strong>Secure Hive</strong> is a compact, cost-effective embedded system that autonomously detects abnormal electromagnetic fields (an indicator of wireless IEDs), blocks wireless activation signals, and notifies authorities in real time.</p>
+      <p>The system integrates <strong>EMF detection, GSM/SMS alerts, GPS tracking, signal jamming, and regenerative recharging</strong> into a single deployable unit suitable for vehicles, patrol units, and urban infrastructure.</p>
+      <div class="callout">
+        <div class="callout-title">⚡ Core Innovation</div>
+        <p>Autonomous threat detection + signal jamming — rare in civilian use — packaged into a prototype under ₹3,500, deployable in police vehicles, military convoys, and public transport fleets.</p>
+      </div>
+    </div>
+    <div class="market-cards">
+      <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:2px;margin-bottom:8px;">// MARKET SIZE ESTIMATION</div>
+      <div class="mcard">
+        <div class="mcard-val">$60B</div>
+        <div class="mcard-info">
+          <strong>Total Addressable Market</strong>
+          <span>Global Security Systems Market (2023)</span>
+        </div>
+      </div>
+      <div class="mcard">
+        <div class="mcard-val b">$10B</div>
+        <div class="mcard-info">
+          <strong>Serviceable Addressable Market</strong>
+          <span>IED Detection & Neutralization (by 2030)</span>
+        </div>
+      </div>
+      <div class="mcard">
+        <div class="mcard-val w">$500M</div>
+        <div class="mcard-info">
+          <strong>Service Oriented Market</strong>
+          <span>Projected 5% SAM capture by 2030</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PHASES -->
+<section id="phases">
+  <div class="sec-head fade-in">
+    <span class="sec-num">// 02</span>
+    <h2>OPERATIONAL PHASES</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="phases-grid fade-in">
+    <div class="phase">
+      <div class="phase-num">1</div>
+      <div class="phase-tag">// Phase 01</div>
+      <h3>DETECTION</h3>
+      <p>EMF detector circuit with TL081 OpAmp identifies abnormal electromagnetic emissions from wireless IED sources within a 1.5–2 meter radius. Signal strength filtering minimizes false positives.</p>
+    </div>
+    <div class="phase">
+      <div class="phase-num">2</div>
+      <div class="phase-tag">// Phase 02</div>
+      <h3>NOTIFICATION</h3>
+      <p>Upon detection, ESP8266 sends email alerts to authorities and SIM800L GSM module sends SMS to vehicle owner with real-time GPS coordinates. Alert dispatch time under 6 seconds.</p>
+    </div>
+    <div class="phase">
+      <div class="phase-num">3</div>
+      <div class="phase-tag">// Phase 03</div>
+      <h3>JAMMING</h3>
+      <p>Custom patch antenna blocks wireless RF communication across key IED frequency bands: 433 MHz, 838 MHz, 1.5 GHz, and 5.8 GHz within a 3–5 meter suppression radius.</p>
+    </div>
+    <div class="phase">
+      <div class="phase-num">4</div>
+      <div class="phase-tag">// Phase 04</div>
+      <h3>RECHARGING</h3>
+      <p>Regenerative braking system harvests kinetic energy to recharge the 12V Li-ion battery, ensuring continuous operation without external power dependency in mobile deployments.</p>
+    </div>
+  </div>
+</section>
+
+<!-- COMPONENTS -->
+<section id="components" style="background:rgba(0,0,0,0.25);">
+  <div class="sec-head fade-in">
+    <span class="sec-num">// 03</span>
+    <h2>HARDWARE COMPONENTS</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="comp-grid fade-in">
+    <div class="comp-card">
+      <div class="comp-icon">1</div>
+      <div>
+        <h3>EMF Detector</h3>
+        <p>TL081 OpAmp-based circuit calibrated to detect electromagnetic radiation from cellular, Wi-Fi, and Bluetooth signals indicative of wireless IED triggers.</p>
+      </div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-icon">2</div>
+      <div>
+        <h3>Arduino Nano</h3>
+        <p>Main microcontroller coordinating all modules — EMF input processing, GPS data parsing, GSM command execution, and jamming relay control logic.</p>
+      </div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-icon">3</div>
+      <div>
+        <h3>SIM800L GSM</h3>
+        <p>GSM module with external SMA antenna for SMS delivery. Uses AT commands for reliable message dispatch to authorities upon threat detection.</p>
+      </div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-icon">4</div>
+      <div>
+        <h3>ESP8266 NodeMCU</h3>
+        <p>Wi-Fi module integrated with SMTP protocols for email alerts. Provides redundant communication channel alongside GSM for comprehensive
+          </div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-icon">5</div>
+      <div>
+        <h3>NEO-6M GPS</h3>
+        <p>GPS module providing real-time location coordinates with ±5 meter accuracy, integrated with alert systems for precise threat localization and reporting.</p>
+      </div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-icon">6</div>
+      <div>
+        <h3>Patch Jamming Antenna</h3>
+        <p>Custom-designed directional antenna suppressing RF signals in IED activation bands (433 MHz – 5.8 GHz) within a 3–5 meter radius to neutralize remote triggers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<section id="results">
+  <div class="sec-head fade-in">
+    <span class="sec-num">// 04</span>
+    <h2>RESULTS & ANALYSIS</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="results-grid fade-in">
+    <div class="res-card">
+      <h3>// Performance Metrics</h3>
+      <div class="metric-row">
+        <span class="metric-label">System Efficiency Rate</span>
+        <span class="metric-val">87%</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">EMF Detection Range</span>
+        <span class="metric-val">1.5 – 2 meters</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">Alert Dispatch Time</span>
+        <span class="metric-val">&lt; 6 seconds</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">GPS Location Accuracy</span>
+        <span class="metric-val">±5 meters</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">Jamming Coverage Radius</span>
+        <span class="metric-val">3 – 5 meters</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">Prototype Unit Cost</span>
+        <span class="metric-val">Under ₹3,500</span>
+      </div>
+    </div>
+    <div class="res-card">
+      <h3>// Frequency Jamming Coverage</h3>
+      <div class="metric-row">
+        <span class="metric-label">433 MHz (RF Remotes)</span>
+        <span class="metric-val warn">JAMMED ✓</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">838 MHz (Cellular)</span>
+        <span class="metric-val warn">JAMMED ✓</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">1.5 GHz (GPS Band)</span>
+        <span class="metric-val warn">JAMMED ✓</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">5.8 GHz (Wi-Fi/Drone)</span>
+        <span class="metric-val warn">JAMMED ✓</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">Notification Channel 1</span>
+        <span class="metric-val">SMS (SIM800L)</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">Notification Channel 2</span>
+        <span class="metric-val">Email (ESP8266)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACHIEVEMENTS -->
+<section id="achievements" style="background:rgba(0,0,0,0.25);">
+  <div class="sec-head fade-in">
+    <span class="sec-num">// 05</span>
+    <h2>ACHIEVEMENTS</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="ach-grid fade-in">
+    <div class="ach-card">
+      <span class="ach-badge">🏆 Competition — 2025</span>
+      <h3>3RD PRIZE</h3>
+      <p>Sairam SDG Innovathon 3.0 — secured 3rd prize under SDG Goal category</p>
+    </div>
+    <div class="ach-card" style="border-top-color:var(--accent2);">
+      <span class="ach-badge" style="color:var(--accent2);">🥈 Competition — 2025</span>
+      <h3>2ND PRIZE</h3>
+      <p>VOLTRONIX '25 — National Level Technical Symposium, Hindustan Institute of Technology & Science</p>
+    </div>
+    <div class="ach-card" style="border-top-color:#ffcc00;">
+      <span class="ach-badge" style="color:#ffcc00);">🏅 Hackathon — 2025</span>
+      <h3>2ND PLACE</h3>
+      <p>IDEATHON 2K25 — Cash prize of ₹5,000 at B.S. Abdur Rahman Crescent Institute</p>
+    </div>
+    <div class="ach-card" style="border-top-color:var(--dim);">
+      <span class="ach-badge" style="color:var(--dim);">📋 IP — 2025</span>
+      <h3>PATENT FILED</h3>
+      <p>Patent publication submitted for Secure Hive system in 2025</p>
+    </div>
+    <div class="ach-card" style="border-top-color:var(--dim);">
+      <span class="ach-badge" style="color:var(--dim);">💡 Hackathon — 2025</span>
+      <h3>PARTICIPATED</h3>
+      <p>MSME Hackathon 2025 — showcased Secure Hive as an innovative defense-tech solution</p>
+    </div>
+    <div class="ach-card" style="border-top-color:var(--dim);">
+      <span class="ach-badge" style="color:var(--dim);">🔬 Progress — 2025</span>
+      <h3>STAGE 2</h3>
+      <p>Advanced from Ideathon 3.0 to Innovathon 3.0 — includes full app development & antenna design</p>
+    </div>
+  </div>
+</section>
+
+<!-- SDG -->
+<section id="sdg">
+  <div class="sec-head fade-in">
+    <span class="sec-num">// 06</span>
+    <h2>SDG ALIGNMENT</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="sdg-row fade-in">
+    <div class="sdg-card">
+      <div class="sdg-num b">16</div>
+      <div class="sdg-body">
+        <h3>Peace, Justice & Strong Institutions</h3>
+        <p>Empowers law enforcement with real-time detection and automated alerts, strengthening institutional response to explosive threats and supporting rule of law.</p>
+      </div>
+    </div>
+    <div class="sdg-card">
+      <div class="sdg-num g">11</div>
+      <div class="sdg-body">
+        <h3>Sustainable Cities & Communities</h3>
+        <p>Provides real-time threat alerts in public spaces, transportation hubs, and event venues — reducing economic and human losses from IED incidents in urban areas.</p>
+      </div>
+    </div>
+    <div class="sdg-card">
+      <div class="sdg-num o">9</div>
+      <div class="sdg-body">
+        <h3>Industry, Innovation & Infrastructure</h3>
+        <p>Leverages affordable sensors, GSM/LoRa communication, and AI-ready architecture to promote smart, resilient safety infrastructure in both urban and rural environments.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-logo">SECURE HIVE</div>
+  <div class="foot-r">
+    Wireless IED Detection & Neutralization System<br/>
+    B.E. Electronics & Communication Engineering · Project Phase I · December 2025
+  </div>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting) e.target.classList.add('visible');});
+  },{threshold:0.08});
+  document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
